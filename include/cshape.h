@@ -1,0 +1,4 @@
+#ifndef CWORLD_CSHAPE_H
+#define CWORLD_CSHAPE_H
+
+#endif //CWORLD_CSHAPE_H
