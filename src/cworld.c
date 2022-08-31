@@ -12,10 +12,8 @@ static Vec2 compute_force(CBody *const body, const Vec2 force) {
 
 static void simulate(CWorld *const t, float dt) {
     for (CBody *body = cvector_begin(t->bodies); body != cvector_end(t->bodies); ++body) {
-        const float time_factor = 4.0f/dt;
-        Vec2 gravity = svec2_multiply_f(svec2(t->gravity[0], -t->gravity[1]), time_factor);
-        Vec2 global = svec2_multiply_f(svec2(t->force[0], -t->force[1]), time_factor);
-
+        Vec2 gravity = svec2(t->gravity[0], -t->gravity[1]);
+        Vec2 global = svec2(t->force[0], -t->force[1]);
         Vec2 force = compute_force(body, svec2_add(gravity, global));
         Vec2 acceleration = svec2(force.x / body->mass, force.y / body->mass);
 
@@ -24,7 +22,7 @@ static void simulate(CWorld *const t, float dt) {
         vec2_add(body->velocity, body->velocity, velocity);
 
         mfloat_t position[VEC2_SIZE];
-        vec2(position, velocity[0] * dt, velocity[1] * dt);
+        vec2(position, body->velocity[0] * dt, body->velocity[1] * dt);
         vec2_add(body->position, body->position, position);
     }
 
