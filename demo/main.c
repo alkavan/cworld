@@ -1,8 +1,14 @@
 #include <version_config.h>
 #include <stdlib.h>
 #include <mathc.h>
-#include <cworld.h>
 
+// cworld
+#include <cworld.h>
+#include <cbody.h>
+#include <shapes.h>
+#include <time.h>
+
+// demo
 #include "config.h"
 #include "app.h"
 #include "draw.h"
@@ -12,12 +18,12 @@
 #include "text.h"
 #include "utility.h"
 
-#include "cbody.h"
-
 #define NUM_BODIES 1000
 
 int main()
 {
+    srand(time(NULL));
+
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "loading cworld demo ...");
 
     // create application object
@@ -66,8 +72,21 @@ int main()
         float random_x = random_between(100, SCREEN_HALF_WIDTH-50);
         float random_y = random_between(100, SCREEN_HALF_HEIGHT-50);
 
-        CBody body = cbody(svec2(random_x, random_y), svec2(0, 0), 1.0f);
-        world->add_body(world, &body);
+        CParticle particle = cparticle(svec2(random_x, random_y), svec2(0, 0), 1.0f);
+        world->add_particle(world, &particle);
+    }
+
+    {
+        BoxShape shape = box_shape(svec2(50.0f, 50.0f));
+        CBody box1 = cbody(
+                svec2((float)SCREEN_HALF_WIDTH, (float)SCREEN_HALF_HEIGHT),
+                svec2(0, 0),
+                10.0f,
+                shape,
+                random_angle(360)
+        );
+
+        world->add_body(world, &box1);
     }
 
     // create profile object
@@ -113,9 +132,14 @@ int main()
                 );
         text2->update(text2, text2_buffer, COLOR_WHITE);
 
-        sprintf(text3_buffer, "body#1 position (%.3f, %.3f) velocity (%.3f, %.3f)",
+        sprintf(text3_buffer, "body#1"
+                              " position (%.3f, %.3f)"
+                              " velocity (%.3f, %.3f)"
+                              " angular velocity (%.3f) angle (%.3f)",
                 world->bodies[0].position[0], world->bodies[0].position[1],
-                world->bodies[0].velocity[0], world->bodies[0].velocity[1]);
+                world->bodies[0].linearVelocity[0], world->bodies[0].linearVelocity[1],
+                world->bodies[0].angularVelocity, world->bodies[0].angle
+                );
         text3->update(text3, text3_buffer, COLOR_WHITE);
 
         // if left mouse button pressed add world force
@@ -135,9 +159,20 @@ int main()
                         svec2(input_context.mouse_position[0], input_context.mouse_position[1]),
                         svec2((float)SCREEN_HALF_WIDTH, (float)SCREEN_HALF_HEIGHT));
 
-        for (CBody *body = cvector_begin(world->bodies); body != cvector_end(world->bodies); ++body) {
+        for (CParticle *particle = cvector_begin(world->particles); particle != cvector_end(world->particles); ++particle) {
             draw_debug_point(app->renderer,COLOR_RED,
-                             svec2(body->position[0], body->position[1]));
+                             svec2(particle->position[0], particle->position[1]));
+        }
+
+        for (CBody *body = cvector_begin(world->bodies); body != cvector_end(world->bodies); ++body) {
+            Vec2 offset = svec2(body->shape.size[0]/2, body->shape.size[1]/2);
+            draw_debug_rect(
+                    app->renderer,
+                    COLOR_BLUE,
+                    svec2_subtract(svec2(body->position[0], body->position[1]), offset),
+                    svec2(body->shape.size[0], body->shape.size[1]),
+                    body->angle
+                    );
         }
 
         // render texts

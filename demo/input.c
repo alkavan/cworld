@@ -1,5 +1,5 @@
 #include "input.h"
-#include "ctypes.h"
+#include "types.h"
 #include "config.h"
 
 void handle_input(App *app, GameInputContext *context)

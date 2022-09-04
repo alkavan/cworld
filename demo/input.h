@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "app.h"
-#include <ctypes.h>
+#include <types.h>
 
 struct MouseButton {
     bool pressed;

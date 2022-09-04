@@ -18,3 +18,7 @@ and kind of feel like too much.
 * Vector Math: [felselva/mathc](https://github.com/felselva/mathc)
 
 **Currently, this engine is _under development_, and should not be used for _production_!**
+
+## Resources
+
+* [https://en.wikipedia.org/wiki/List_of_moments_of_inertia](https://en.wikipedia.org/wiki/List_of_moments_of_inertia)

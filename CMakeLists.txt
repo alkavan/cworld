@@ -15,8 +15,9 @@ include_directories(include)
 
 add_library(cworld SHARED
         src/cworld.c
+        src/cparticle.c
+        src/shapes.c
         src/cbody.c
-        src/cshape.c
         )
 
 target_link_libraries(cworld mathc)
