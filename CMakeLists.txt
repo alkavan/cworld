@@ -13,7 +13,7 @@ include_directories(third_party/mathc)
 # cworld library
 include_directories(include)
 
-add_library(cworld SHARED
+add_library(cworld STATIC
         src/cworld.c
         src/cparticle.c
         src/shapes.c

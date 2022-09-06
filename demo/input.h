@@ -15,6 +15,8 @@ typedef struct MouseButton MouseButton;
 struct GameInputContext {
     mfloat_t mouse_position[VEC2_SIZE];
     mfloat_t mouse_direction[VEC2_SIZE];
+    mfloat_t mouse_length;
+    mfloat_t mouse_length_squared;
     MouseButton mouse_left_button;
     MouseButton mouse_right_button;
 };

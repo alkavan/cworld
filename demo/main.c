@@ -1,6 +1,9 @@
 #include <version_config.h>
 #include <stdlib.h>
 #include <mathc.h>
+#include <SDL2/SDL_main.h>
+
+//#define SDL_MAIN_HANDLED
 
 // cworld
 #include <cworld.h>
@@ -13,14 +16,13 @@
 #include "app.h"
 #include "draw.h"
 #include "input.h"
-#include "timer.h"
 #include "profile.h"
 #include "text.h"
 #include "utility.h"
 
-#define NUM_BODIES 1000
+#define NUM_BODIES 10
 
-int main()
+int main(int argc, char *argv[])
 {
     srand(time(NULL));
 
@@ -60,6 +62,8 @@ int main()
     GameInputContext input_context = (GameInputContext) {
             {0.0f, 0.0f},
             {0.0f, 0.0f},
+            0.f,
+            0.f,
             {false, 0},
             {false, 0},
     };
@@ -68,14 +72,6 @@ int main()
     CWorld *world = cworld_new(svec2(0.f, -9.81f));
 
     // create world bodies at random location range from screen center
-    for (int i = 0; i < NUM_BODIES; ++i) {
-        float random_x = random_between(100, SCREEN_HALF_WIDTH-50);
-        float random_y = random_between(100, SCREEN_HALF_HEIGHT-50);
-
-        CParticle particle = cparticle(svec2(random_x, random_y), svec2(0, 0), 1.0f);
-        world->add_particle(world, &particle);
-    }
-
     {
         BoxShape shape = box_shape(svec2(50.0f, 50.0f));
         CBody box1 = cbody(
@@ -96,7 +92,7 @@ int main()
     profile->init(profile);
 
     // delta time
-    float dt;
+    float dt = 0.f;
 
     // render loop
     while (app->running)
@@ -124,9 +120,10 @@ int main()
         Uint32 right_button_press_duration = input_context.mouse_right_button.pressed
                                              ? SDL_GetTicks() - input_context.mouse_right_button.press_ticks : 0;
 
-        sprintf(text2_buffer, "mouse (%d, %d) direction (%.2f, %.2f) left[%s, %u] right[%s, %u]",
+        sprintf(text2_buffer, "mouse (%d, %d) direction (%.2f, %.2f)[%.2f] left[%s, %u] right[%s, %u]",
                 (int)input_context.mouse_position[0], (int)input_context.mouse_position[1],
                 input_context.mouse_direction[0], input_context.mouse_direction[1],
+                input_context.mouse_length,
                 input_context.mouse_left_button.pressed ? "+" : "-", left_button_press_duration,
                 input_context.mouse_right_button.pressed ? "+" : "-", right_button_press_duration
                 );
@@ -147,7 +144,21 @@ int main()
             Vec2 mouse_force = svec2((float)left_button_press_duration*dt, (float)left_button_press_duration*dt);
             Vec2 mouse_direction = svec2(input_context.mouse_direction[0], -input_context.mouse_direction[1]);
             mouse_force = svec2_multiply(mouse_force, mouse_direction);
-            world->apply_force(world, mouse_force);
+//            world->apply_force(world, mouse_force);
+
+            for (int i = 0; i < NUM_BODIES; ++i) {
+                int range = 50;
+                float random_x = random_between(50, SCREEN_HALF_WIDTH-(range/2));
+                float random_y = random_between(50, SCREEN_HALF_HEIGHT-(range/2));
+
+                Vec2 particle_velocity = svec2_multiply_f(svec2(mouse_force.x, -mouse_force.y), input_context.mouse_length/16.f);
+                CParticle particle = cparticle(svec2(random_x, random_y), particle_velocity, 1.0f);
+                world->add_particle(world, &particle);
+            }
+        }
+
+        if(input_context.mouse_left_button.pressed) {
+
         }
 
         if(dt > 0.f && dt < 0.1f) world->simulate(world, dt);

@@ -1,4 +1,5 @@
 find_package(SDL2 REQUIRED CONFIG)
+find_package(sdl2-ttf CONFIG REQUIRED)
 
 add_executable(cworld_demo
         main.c
@@ -15,6 +16,10 @@ add_executable(cworld_demo
         profile.h
         text.c
         text.h
-        utility.c utility.h)
+        utility.c
+        utility.h
+        )
 
-target_link_libraries(cworld_demo cworld m SDL2 SDL2_ttf)
+target_include_directories(cworld_demo PRIVATE "C:\\vcpkg\\installed\\x86-windows\\include")
+
+target_link_libraries(cworld_demo cworld SDL2::SDL2 SDL2::SDL2main SDL2::SDL2_ttf)

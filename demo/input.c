@@ -21,10 +21,12 @@ void handle_input(App *app, GameInputContext *context)
             vec2(context->mouse_position, event.motion.x, event.motion.y);
 
             mfloat_t center[VEC2_SIZE];
-            vec2(center,SCREEN_HALF_WIDTH, SCREEN_HALF_HEIGHT);
+            vec2(center,(float)SCREEN_HALF_WIDTH, (float)SCREEN_HALF_HEIGHT);
 
             mfloat_t direction[VEC2_SIZE];
             vec2_subtract(direction, context->mouse_position, center);
+            context->mouse_length = vec2_length(direction);
+            context->mouse_length_squared = vec2_length_squared(direction);
             vec2_normalize(context->mouse_direction, direction);
         }
 

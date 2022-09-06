@@ -55,7 +55,7 @@ void draw_debug_rect(SDL_Renderer *renderer, SDL_Color color, Vec2 p1, Vec2 size
 
 void draw_debug_cross(SDL_Renderer *renderer, SDL_Color color) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderDrawLine(renderer, 0, SCREEN_HALF_HEIGHT, SCREEN_WIDTH, SCREEN_HALF_HEIGHT);
+    SDL_RenderDrawLine(renderer, 0, (int)SCREEN_HALF_HEIGHT, SCREEN_WIDTH, SCREEN_HALF_HEIGHT);
     SDL_RenderDrawLine(renderer, SCREEN_HALF_WIDTH, 0, SCREEN_HALF_WIDTH, SCREEN_HEIGHT);
 }
 
