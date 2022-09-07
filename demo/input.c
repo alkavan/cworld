@@ -1,5 +1,4 @@
 #include "input.h"
-#include "types.h"
 #include "config.h"
 
 void handle_input(App *app, GameInputContext *context)
@@ -18,10 +17,10 @@ void handle_input(App *app, GameInputContext *context)
         }
 
         if(event.type == SDL_MOUSEMOTION) {
-            vec2(context->mouse_position, event.motion.x, event.motion.y);
+            vec2(context->mouse_position, (float)event.motion.x, (float)event.motion.y);
 
             mfloat_t center[VEC2_SIZE];
-            vec2(center,SCREEN_HALF_WIDTH, SCREEN_HALF_HEIGHT);
+            vec2(center,(float)SCREEN_HALF_WIDTH, (float)SCREEN_HALF_HEIGHT);
 
             mfloat_t direction[VEC2_SIZE];
             vec2_subtract(direction, context->mouse_position, center);

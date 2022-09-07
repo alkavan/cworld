@@ -4,9 +4,10 @@
 #include <time.h>
 
 // cworld
-#include <cworld.h>
-#include <cbody.h>
-#include <shapes.h>
+#include <cworld/cworld.h>
+#include <cworld/cbody.h>
+#include <cworld/shapes.h>
+#include <cworld/convert.h>
 
 // demo
 #include "config.h"
@@ -17,7 +18,7 @@
 #include "profile.h"
 #include "text.h"
 #include "utility.h"
-#include "convert.h"
+
 
 #define NUM_BODIES 10
 

@@ -1,4 +1,4 @@
-#include "cworld.h"
+#include "cworld/cworld.h"
 
 static void apply_force(CWorld *const t, const Vec2 force) {
     mfloat_t f[VEC2_SIZE];

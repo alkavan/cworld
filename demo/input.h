@@ -2,9 +2,9 @@
 #define SDL2_C17_INPUT_H
 
 #include <SDL2/SDL.h>
+#include <cworld/types.h>
 
 #include "app.h"
-#include <types.h>
 
 struct MouseButton {
     bool pressed;

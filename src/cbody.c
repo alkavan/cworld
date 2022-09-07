@@ -1,5 +1,5 @@
-#include "cbody.h"
-#include "convert.h"
+#include "cworld/cbody.h"
+#include "cworld/convert.h"
 
 void calc_box_inertia(BoxShape *const box_shape, float mass) {
     float m = mass;

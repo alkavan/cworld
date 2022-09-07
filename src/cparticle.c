@@ -1,4 +1,4 @@
-#include "cparticle.h"
+#include "cworld/cparticle.h"
 
 CParticle cparticle(Vec2 position, Vec2 velocity, float mass) {
     return (CParticle){
