@@ -54,8 +54,8 @@ static void simulate(CWorld *const t, float dt) {
 
         float angular_acceleration = body->torque / body->shape.inertiaMoment;
         body->angularVelocity += angular_acceleration * dt;
-        body->angle += body->angularVelocity * dt;
 
+        vec2_rotate(body->rotation, body->rotation, to_radians(body->angularVelocity * dt));
     }
 
     // zero applied force

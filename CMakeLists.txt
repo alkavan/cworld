@@ -18,6 +18,7 @@ add_library(cworld SHARED
         src/cparticle.c
         src/shapes.c
         src/cbody.c
+        src/convert.c
         )
 
 target_link_libraries(cworld mathc)

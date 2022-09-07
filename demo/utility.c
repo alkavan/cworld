@@ -1,6 +1,7 @@
+#include "utility.h"
+
 #include <stdlib.h>
 #include <math.h>
-#include "utility.h"
 #include <mathc.h>
 
 float random_until(int range) {

@@ -8,8 +8,8 @@ struct CBody {
     mfloat_t position[VEC2_SIZE];
     mfloat_t linearVelocity[VEC2_SIZE];
     mfloat_t mass;
+    mfloat_t rotation[VEC2_SIZE];
     mfloat_t angularVelocity;
-    mfloat_t angle;
     mfloat_t torque;
     BoxShape shape;
 };

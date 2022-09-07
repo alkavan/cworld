@@ -1,4 +1,5 @@
 #include "cbody.h"
+#include "convert.h"
 
 void calc_box_inertia(BoxShape *const box_shape, float mass) {
     float m = mass;
@@ -9,12 +10,15 @@ void calc_box_inertia(BoxShape *const box_shape, float mass) {
 
 CBody cbody(Vec2 position, Vec2 velocity, float mass, BoxShape shape, float angle) {
     calc_box_inertia(&shape, mass);
+
+    Mat2 rotation = smat2_rotation_z(to_radians(angle));
+
     return (CBody){
         {position.x, position.y},
         {velocity.x, velocity.y},
         mass,
+        {rotation.m11, rotation.m21},
         0.f,
-        angle,
         0.f,
         shape,
     };
@@ -26,8 +30,11 @@ CBody *cbody_new(Vec2 position, Vec2 velocity, float mass, BoxShape shape, float
     vec2(body->position, position.x, position.y);
     vec2(body->linearVelocity, velocity.x, velocity.y);
     body->mass = mass;
+
+    Mat2 rotation = smat2_rotation_z(to_radians(angle));
+    vec2(body->rotation, rotation.m11, rotation.m21);
+
     body->angularVelocity = 0.f;
-    body->angle = angle;
     body->torque = 0.f;
 
     calc_box_inertia(&shape, mass);

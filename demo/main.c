@@ -1,12 +1,12 @@
 #include <version_config.h>
 #include <stdlib.h>
 #include <mathc.h>
+#include <time.h>
 
 // cworld
 #include <cworld.h>
 #include <cbody.h>
 #include <shapes.h>
-#include <time.h>
 
 // demo
 #include "config.h"
@@ -17,14 +17,16 @@
 #include "profile.h"
 #include "text.h"
 #include "utility.h"
+#include "convert.h"
 
-#define NUM_BODIES 1000
+#define NUM_BODIES 10
 
 int main()
 {
-    srand(time(NULL));
-
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "loading cworld demo ...");
+
+    // initialize random numbers
+    srand(time(NULL));
 
     // create application object
     App* app = app_new();
@@ -66,15 +68,6 @@ int main()
 
     // create world
     CWorld *world = cworld_new(svec2(0.f, -9.81f));
-
-    // create world bodies at random location range from screen center
-    for (int i = 0; i < NUM_BODIES; ++i) {
-        float random_x = random_between(100, SCREEN_HALF_WIDTH-50);
-        float random_y = random_between(100, SCREEN_HALF_HEIGHT-50);
-
-        CParticle particle = cparticle(svec2(random_x, random_y), svec2(0, 0), 1.0f);
-        world->add_particle(world, &particle);
-    }
 
     {
         BoxShape shape = box_shape(svec2(50.0f, 50.0f));
@@ -132,13 +125,15 @@ int main()
                 );
         text2->update(text2, text2_buffer, COLOR_WHITE);
 
+        float body0_angle = vec2_to_deg(world->bodies[0].rotation);
+
         sprintf(text3_buffer, "body#1"
                               " position (%.3f, %.3f)"
                               " velocity (%.3f, %.3f)"
                               " angular velocity (%.3f) angle (%.3f)",
                 world->bodies[0].position[0], world->bodies[0].position[1],
                 world->bodies[0].linearVelocity[0], world->bodies[0].linearVelocity[1],
-                world->bodies[0].angularVelocity, world->bodies[0].angle
+                world->bodies[0].angularVelocity, body0_angle
                 );
         text3->update(text3, text3_buffer, COLOR_WHITE);
 
@@ -148,6 +143,16 @@ int main()
             Vec2 mouse_direction = svec2(input_context.mouse_direction[0], -input_context.mouse_direction[1]);
             mouse_force = svec2_multiply(mouse_force, mouse_direction);
             world->apply_force(world, mouse_force);
+
+            // create world bodies at random location range from screen center
+            for (int i = 0; i < NUM_BODIES; ++i) {
+                float random_x = random_between(100, SCREEN_HALF_WIDTH-50);
+                float random_y = random_between(100, SCREEN_HALF_HEIGHT-50);
+
+                CParticle particle = cparticle(svec2(random_x, random_y), svec2(0, 0), 1.0f);
+                world->add_particle(world, &particle);
+            }
+
         }
 
         if(dt > 0.f && dt < 0.1f) world->simulate(world, dt);
@@ -166,12 +171,13 @@ int main()
 
         for (CBody *body = cvector_begin(world->bodies); body != cvector_end(world->bodies); ++body) {
             Vec2 offset = svec2(body->shape.size[0]/2, body->shape.size[1]/2);
+
             draw_debug_rect(
                     app->renderer,
                     COLOR_BLUE,
                     svec2_subtract(svec2(body->position[0], body->position[1]), offset),
                     svec2(body->shape.size[0], body->shape.size[1]),
-                    body->angle
+                    body0_angle
                     );
         }
 
