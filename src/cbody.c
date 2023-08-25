@@ -8,7 +8,7 @@ void calc_box_inertia(BoxShape *const box_shape, float mass) {
     box_shape->inertiaMoment = m * (w * w + h * h) / 12;
 }
 
-CBody cbody(Vec2 position, Vec2 velocity, float mass, BoxShape shape, float angle) {
+CBody cbody(BodyType type, Vec2 position, Vec2 velocity, float mass, BoxShape shape, float angle) {
     calc_box_inertia(&shape, mass);
 
     Mat2 rotation = smat2_rotation_z(to_radians(angle));
@@ -21,10 +21,11 @@ CBody cbody(Vec2 position, Vec2 velocity, float mass, BoxShape shape, float angl
         0.f,
         0.f,
         shape,
+        type
     };
 }
 
-CBody *cbody_new(Vec2 position, Vec2 velocity, float mass, BoxShape shape, float angle) {
+CBody *cbody_new(BodyType type, Vec2 position, Vec2 velocity, float mass, BoxShape shape, float angle) {
     CBody *body = (CBody*) malloc(sizeof(CBody));
 
     vec2(body->position, position.x, position.y);
@@ -39,10 +40,15 @@ CBody *cbody_new(Vec2 position, Vec2 velocity, float mass, BoxShape shape, float
 
     calc_box_inertia(&shape, mass);
     body->shape = shape;
+    body->type = type;
 
     return body;
 }
 
 void cbody_free(CBody *t) {
     free(t);
+}
+
+void cbody_set_type(CBody *const body, const BodyType type) {
+    body->type = type;
 }

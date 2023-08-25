@@ -72,6 +72,11 @@ static void simulate(CWorld *const t, float dt) {
 
     // bodies
     for (CBody *body = cvector_begin(t->bodies); body != cvector_end(t->bodies); ++body) {
+        // @todo: do not handle static bodies, fix this.
+        if(body->type == BodyStatic) {
+            continue;
+        }
+
         Vec2 gravity = svec2(t->gravity[0], -t->gravity[1]);
         Vec2 global = svec2(t->force[0], -t->force[1]);
         Vec2 force = compute_force_body(body, svec2_add(gravity, global));
