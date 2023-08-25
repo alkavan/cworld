@@ -1,13 +1,26 @@
 #include "cworld/cworld.h"
 
+// world operations
 static void apply_force(CWorld *const t, const Vec2 force) {
     mfloat_t f[VEC2_SIZE];
     vec2(f, force.x, force.y);
     vec2_add(t->force, t->force, f);
 }
 
-static Vec2 compute_force_particle(CParticle *const particle, const Vec2 force) {
-    return svec2(particle->mass * force.x, particle->mass * force.y);
+// body operations
+static void add_body(CWorld *const t, CBody *const body) {
+    cvector_push_back(t->bodies, *body);
+}
+
+static void remove_body(CWorld *const t, CBody *const body) {
+    CBody *it;
+    int i = 0;
+    for (it = cvector_begin(t->bodies); it != cvector_end(t->bodies); ++it) {
+        if(body == it) {
+            cvector_erase(t->bodies, i);
+        }
+        ++i;
+    }
 }
 
 static Vec2 compute_force_body(CBody *const body, const Vec2 force) {
@@ -19,6 +32,27 @@ void compute_force_and_torque(CBody *const body, const Vec2 force) {
     body->torque = r.x * force.y - r.y * force.x;
 }
 
+// particle operations
+static void add_particle(CWorld *const t, CParticle *const particle) {
+    cvector_push_back(t->particles, *particle);
+}
+
+static void remove_particle(CWorld *const t, CParticle *const particle) {
+    CParticle *it;
+    int i = 0;
+    for (it = cvector_begin(t->particles); it != cvector_end(t->particles); ++it) {
+        if(particle == it) {
+            cvector_erase(t->particles, i);
+        }
+        ++i;
+    }
+}
+
+static Vec2 compute_force_particle(CParticle *const particle, const Vec2 force) {
+    return svec2(particle->mass * force.x, particle->mass * force.y);
+}
+
+// simulation
 static void simulate(CWorld *const t, float dt) {
     // particles
     for (CParticle *particle = cvector_begin(t->particles); particle != cvector_end(t->particles); ++particle) {
@@ -60,36 +94,6 @@ static void simulate(CWorld *const t, float dt) {
 
     // zero applied force
     vec2_zero(t->force);
-}
-
-static void add_body(CWorld *const t, CBody *const body) {
-    cvector_push_back(t->bodies, *body);
-}
-
-static void remove_body(CWorld *const t, CBody *const body) {
-    CBody *it;
-    int i = 0;
-    for (it = cvector_begin(t->bodies); it != cvector_end(t->bodies); ++it) {
-        if(body == it) {
-            cvector_erase(t->bodies, i);
-        }
-        ++i;
-    }
-}
-
-static void add_particle(CWorld *const t, CParticle *const particle) {
-    cvector_push_back(t->particles, *particle);
-}
-
-static void remove_particle(CWorld *const t, CParticle *const particle) {
-    CParticle *it;
-    int i = 0;
-    for (it = cvector_begin(t->particles); it != cvector_end(t->particles); ++it) {
-        if(particle == it) {
-            cvector_erase(t->particles, i);
-        }
-        ++i;
-    }
 }
 
 CWorld *cworld_new(Vec2 gravity) {
